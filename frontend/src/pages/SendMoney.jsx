@@ -36,7 +36,7 @@ export const SendMoney = () => {
             
             setSuccess(true);
             setTimeout(() => {
-                navigate("/dashboard");
+                navigate("/transactions");
             }, 2000);
         } catch (err) {
             setError(err.response?.data?.message || "Transfer failed");
