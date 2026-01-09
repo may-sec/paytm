@@ -13,7 +13,7 @@
   ],
   "routes": [
     {
-      "src": "/api/v1/user/signup/bulk",
+      "src": "/api/v1/user/bulk",
       "dest": "backend/index.js"
     },
     {

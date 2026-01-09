@@ -56,7 +56,6 @@ router.post("/signup", async (req, res) => {
     })
 })
 
-
 const signinBody = zod.object({
     username: zod.email(),
 	password: zod.string()
@@ -86,7 +85,6 @@ router.post("/signin", async (req, res) => {
         return;
     }
 
-    
     res.status(411).json({
         message: "Error while logging in"
     })
@@ -115,19 +113,39 @@ router.put("/", authMiddleware, async (req, res) => {
     })
 })
 
-router.get("/bulk", async (req, res) => {
+router.get("/bulk", authMiddleware, async (req, res) => {
     const filter = req.query.filter || "";
 
     const users = await User.find({
-        $or: [{
-            firstName: {
-                "$regex": filter
+        $and: [
+            {
+                _id: {
+                    $ne: req.userId  // exclude current user
+                }
+            },
+            {
+                $or: [
+                    {
+                        firstName: {
+                            "$regex": filter,
+                            "$options": "i"
+                        }
+                    },
+                    {
+                        lastName: {
+                            "$regex": filter,
+                            "$options": "i"
+                        }
+                    },
+                    {
+                        username: {
+                            "$regex": filter,
+                            "$options": "i"
+                        }
+                    }
+                ]
             }
-        }, {
-            lastName: {
-                "$regex": filter
-            }
-        }]
+        ]
     })
 
     res.json({

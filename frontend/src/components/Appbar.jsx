@@ -40,7 +40,7 @@ export const Appbar = () => {
                         onClick={() => setShowMenu(!showMenu)}
                         className="flex items-center space-x-2 px-4 py-2 rounded-full hover:bg-gray-100 transition"
                     >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 rounded-full bg-linear-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                             {firstName[0].toUpperCase()}
                         </div>
                         <span className="hidden sm:block font-medium">{firstName}</span>
