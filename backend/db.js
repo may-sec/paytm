@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 
 const accountSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId, // Reference to User model
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
@@ -48,10 +48,34 @@ const accountSchema = new mongoose.Schema({
     }
 });
 
+// Add Transaction Schema
+const transactionSchema = new mongoose.Schema({
+    from: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    to: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema);
 
 module.exports = {
-	User,
-    Account
+    User,
+    Account,
+    Transaction
 };
