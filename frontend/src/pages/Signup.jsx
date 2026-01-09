@@ -35,6 +35,8 @@ export const Signup = () => {
                 password
             });
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("firstName", firstName);
+            localStorage.setItem("lastName", lastName);
             navigate("/dashboard");
         } catch (err) {
             setError(err.response?.data?.message || "Signup failed. Please try again.");

@@ -25,12 +25,46 @@ export const Signin = () => {
         setLoading(true);
         setError("");
 
+
+        // After successful signin:
+        const response = await axios.post(`${API_URL}/api/v1/user/signin`, {
+            username,
+            password
+        });
+        localStorage.setItem("token", response.data.token);
+
+        // Fetch user details
         try {
+            const userRes = await axios.get(`${API_URL}/api/v1/user/me`, {
+                headers: { Authorization: "Bearer " + response.data.token }
+            });
+            localStorage.setItem("firstName", userRes.data.firstName);
+            localStorage.setItem("lastName", userRes.data.lastName);
+        } catch (err) {
+            console.log("Could not fetch user details");
+        }
+
+        navigate("/dashboard");
+
+        try {
+            // After successful signin:
             const response = await axios.post(`${API_URL}/api/v1/user/signin`, {
                 username,
                 password
             });
             localStorage.setItem("token", response.data.token);
+
+            // Fetch user details
+            try {
+                const userRes = await axios.get(`${API_URL}/api/v1/user/me`, {
+                    headers: { Authorization: "Bearer " + response.data.token }
+                });
+                localStorage.setItem("firstName", userRes.data.firstName);
+                localStorage.setItem("lastName", userRes.data.lastName);
+            } catch (err) {
+                console.log("Could not fetch user details");
+            }
+
             navigate("/dashboard");
         } catch (err) {
             setError(err.response?.data?.message || "Invalid credentials");
