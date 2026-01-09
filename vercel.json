@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "backend/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/v1/user/(signup|signin|bulk)",
+      "dest": "backend/index.js"
+    },
+    {
+      "src": "/api/v1/user",
+      "dest": "backend/index.js",
+      "methods": ["PUT"]
+    },
+    {
+      "src": "/api/v1/account/(balance|transfer)",
+      "dest": "backend/index.js"
+    },
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "backend/index.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/frontend/assets/$1"
+    },
+    {
+      "src": "/(vite\\.svg|paytm\\.png)",
+      "dest": "/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
+    }
+  ]
+}
