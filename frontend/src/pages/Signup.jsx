@@ -9,44 +9,88 @@ import { useNavigate } from "react-router"
 
 export const Signup = () => {
     const API_URL = import.meta.env.PROD ? "" : "http://localhost:3000";
-
+    
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    return <div className="bg-slate-300 h-screen flex justify-center">
-    <div className="flex flex-col justify-center">
-      <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
-        <Heading label={"Sign up"} />
-        <SubHeading label={"Enter your infromation to create an account"} />
-        <InputBox onChange={e => {
-          setFirstName(e.target.value);
-        }} placeholder="John" label={"First Name"} />
-        <InputBox onChange={(e) => {
-          setLastName(e.target.value);
-        }} placeholder="Doe" label={"Last Name"} />
-        <InputBox onChange={e => {
-          setUsername(e.target.value);
-        }} placeholder="john@gmail.com" label={"Email"} />
-        <InputBox onChange={(e) => {
-          setPassword(e.target.value)
-        }} placeholder="123456" label={"Password"} />
-        <div className="pt-4">
-          <Button onClick={async () => {
+    const handleSignup = async () => {
+        if (!firstName || !lastName || !username || !password) {
+            setError("All fields are required");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
             const response = await axios.post(`${API_URL}/api/v1/user/signup`, {
-              username,
-              firstName,
-              lastName,
-              password
+                username,
+                firstName,
+                lastName,
+                password
             });
-            localStorage.setItem("token", response.data.token)
-            navigate("/dashboard")
-          }} label={"Sign up"} />
+            localStorage.setItem("token", response.data.token);
+            navigate("/dashboard");
+        } catch (err) {
+            setError(err.response?.data?.message || "Signup failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return <div className="bg-slate-300 h-screen flex justify-center">
+        <div className="flex flex-col justify-center">
+            <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
+                <Heading label={"Sign up"} />
+                <SubHeading label={"Enter your information to create an account"} />
+                
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+                        {error}
+                    </div>
+                )}
+
+                <InputBox 
+                    onChange={e => setFirstName(e.target.value)} 
+                    placeholder="John" 
+                    label={"First Name"} 
+                    disabled={loading}
+                />
+                <InputBox 
+                    onChange={e => setLastName(e.target.value)} 
+                    placeholder="Doe" 
+                    label={"Last Name"} 
+                    disabled={loading}
+                />
+                <InputBox 
+                    onChange={e => setUsername(e.target.value)} 
+                    placeholder="john@gmail.com" 
+                    label={"Email"} 
+                    disabled={loading}
+                />
+                <InputBox 
+                    onChange={e => setPassword(e.target.value)} 
+                    placeholder="123456" 
+                    label={"Password"}
+                    type="password"
+                    disabled={loading}
+                />
+                
+                <div className="pt-4">
+                    <Button 
+                        onClick={handleSignup} 
+                        label={loading ? "Signing up..." : "Sign up"} 
+                        disabled={loading}
+                    />
+                </div>
+                
+                <BottomWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />
+            </div>
         </div>
-        <BottomWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />
-      </div>
     </div>
-  </div>
 }
